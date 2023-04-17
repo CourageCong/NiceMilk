@@ -1,0 +1,42 @@
+class A{
+    int a
+    void printA(){
+        println(a)
+    }
+}
+
+new A(a: 1).printA()
+//在groovy中相当于纯反射的调用，如下
+//def a = new A(a:1)
+//invokeMethod(a,"printA",[])
+
+def closure = {}
+def closure1 = {return 1}
+def closure2 = {param -> return param+1}
+def closure3 = {return it+1}
+
+
+def test(int i , Closure c){
+    return c(i)
+}
+println(test(1,{2 * it}))
+println(test(2){2 * it})
+println test(3){2 * it}
+
+plugins {
+    id("com.diffplug.spotless") version "6.4.1"
+}
+
+
+task('helloWorld'){
+    //这部分可以理解为就是对这个task进行配置 configuration阶段
+    println("configure")
+    doLast{
+        println("doLast")
+    }
+    doFirst{
+        println("doFrist")
+    }
+}
+
+

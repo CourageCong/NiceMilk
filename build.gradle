@@ -1,6 +1,162 @@
+import org.gradle.internal.impldep.jcifs.util.Base64
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    }
+}
+
 plugins {
     id 'com.android.application' version '7.4.2' apply false
     id 'com.android.library' version '7.4.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
 }
+
+
+
+task('helloWorld'){
+    //这部分可以理解为就是对这个task进行配置 configuration阶段
+    println("configure")
+    doLast{
+        println("doLast")
+    }
+    doFirst{
+        println("doFrist")
+    }
+}
+
+class MyPlugin1 implements Plugin<org.gradle.api.Project>{
+
+    @Override
+    void apply(Project project) {
+        (0..<10).each {
+            project.task("task" + it) {
+                println(getName())
+                doLast {
+                    println(getName()+" lala")
+                }
+            }
+        }
+    }
+}
+
+//apply plugin:MyPlugin1 // void apply(Map<String, ?> var1);
+
+if(org.apache.commons.lang3.StringUtils.isNotBlank("s")){
+    println("abc")
+}
+
+def name = 10
+println(name)
+
+def add(a,b){
+    a+b
+}
+def result = add 2,3
+println(result)
+
+//自动创建get set
+class Person{
+    def name
+    def age
+}
+Person p = new Person()
+p.setAge(10)
+p.age = 20
+p.name = "小强"
+println("name:${p.name} age:${p.getAge()}")//name:小强 age:20
+
+
+Person person1 = new Person()
+Person person2 = new Person()
+person1.name = "AA"
+person2.name = "BB"
+
+println("person1.name == person2.name " + (person1.name == person2.name))
+println("person1 is person2 " + person1.is(person2))
+
+def a = 5>3 ? "yes":"no"//三目运算符
+println(a)
+
+task test(name:"test11",group:"app"){
+    doLast{
+        println("111")
+    }
+}
+
+task ab(dependsOn:"test11"){
+    doFirst{
+        println("222")
+    }
+    ext {
+        def age = 10
+    }
+}
+
+task("3412",name:"test1123",group:"app"){
+    doLast{
+        println("1122")
+    }
+}
+ext{
+    nameS = "pp"
+}
+
+def age = 10
+task s1(group: "app"){
+    doLast{
+        age = 19
+        println(age)
+        println(rootProject.ext.nameS)
+        rootProject.ext.nameS = "aa"
+        println(rootProject.ext.nameS)
+    }
+}
+s1.dependsOn("3412")
+s1.configure {
+    doLast{
+
+    }
+}
+
+class MyTask extends DefaultTask {
+
+
+    @TaskAction
+    def ss1() {
+        println("This is MyTask --> action11!")
+    }
+
+    @TaskAction
+    def ss2() {
+        println("This is MyTask --> action22!")
+    }
+
+}
+
+task speak(type: MyTask,group: "app") {
+    println("This is AA!")
+    doFirst {
+        println("This is doFirst!")
+    }
+    doLast {
+        println("This is doLast!")
+    }
+}
+
+defaultTasks 'speak',"tom1"
+
+task tom1{
+    doLast{
+        println("1 tom1:")
+    }
+}
+task tom2{
+
+}
+tom2.dependsOn(tom1)
